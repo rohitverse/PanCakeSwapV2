@@ -145,7 +145,7 @@ describe(' Withdraw Function', async () => {
     })
   });
 describe(' EnterStaking  Function', async () => {
-    it( " *** EnterStaking Function ***  ",async ()=>{
+    it( " *** EnterStaking Function *** ",async ()=>{
       await _beforeStaking();
       console.log(`***  BEFORE ENTERSTAKING  ***`)
       initialCake = await cakeToken.balanceOf(signer[0].address);
@@ -172,7 +172,7 @@ describe(' EnterStaking  Function', async () => {
       await cakeToken.connect(signer[0]).approve(masterChef.target,1000);
       await masterChef.connect(signer[0]).enterStaking(500);
 
-      console.log("BEFORE LEAVESTAKING")
+      console.log(` *** BEFORE LEAVESTAKING *** `)
       initialCake = await cakeToken.balanceOf(signer[0].address);
       initialSyrup = await syrupBar.balanceOf(signer[0].address);
 
@@ -181,7 +181,7 @@ describe(' EnterStaking  Function', async () => {
       
       await masterChef.connect(signer[0]).leaveStaking(500);
 
-      console.log("AFTER LEAVESTAKING")
+      console.log(` *** AFTER LEAVESTAKING *** `)
       finalCake = await cakeToken.balanceOf(signer[0].address);
       finalSyrup = await syrupBar.balanceOf(signer[0].address);
       console.log(`Cake balance of signer : ${finalCake}`)
@@ -191,45 +191,43 @@ describe(' EnterStaking  Function', async () => {
       expect(initialSyrup).to.be.greaterThan(finalSyrup);
     })
    });
-describe(' LeavingStaking  Function', async () => {
-   it("EMERGENCY Withdraw Function : ",async()=>{
-
+describe('Emergency Withdraw Function', async () => {
+   it(" *** Emergency Withdraw Function *** " ,async()=>{
     await _deposit();
-
-    console.log("AFTER DEPOSIT")
-    initialCake = await cake.balanceOf(signer[0].address);
-    initialSigner = await lpToken1.balanceOf(signer[0].address);
-    initialMasterchef = await lpToken1.balanceOf(masterChef.target);
-    console.log("Cake balance of signer : ",initialCake);
-    console.log("lpToken1 balance of signer : ",initialSigner)
-    console.log("lpToken1 balance of masterChef : ",initialMasterChef)
+    console.log(` *** AFTER DEPOSIT *** `)
+    initialCake = await cakeToken.balanceOf(signer[0].address);
+    initialSigner = await LPToken1.balanceOf(signer[0].address);
+    initialMasterchef = await LPToken1.balanceOf(masterChef.target);
+    console.log(`Cake balance of signer : ${initialCake}`);
+    console.log(`LPToken1 balance of signer : ${initialSigner}`)
+    console.log(`LPToken1 balance of masterChef : ${initialMasterchef}`)
 
     await masterChef.connect(signer[0]).emergencyWithdraw(1);
 
-    console.log("AFTER WITHDRAW")
-    finalCake = await cake.balanceOf(signer[0].address);
-    finalSigner = await lpToken1.balanceOf(signer[0].address);
-    finalMasterchef = await lpToken1.balanceOf(masterchef.target);
-    console.log("Cake balance of signer : ",finalCake)
-    console.log("lpToken1 balance of signer : ",finalSigner)
-    console.log("lpToken1 balance of masterchef : ",finalMasterchef)
+    console.log(` *** AFTER WITHDRAW *** `)
+    finalCake = await cakeToken.balanceOf(signer[0].address);
+    finalSigner = await LPToken1.balanceOf(signer[0].address);
+    finalMasterchef = await LPToken1.balanceOf(masterChef.target);
+    console.log(`Cake balance of signer : ${finalCake}`);
+    console.log(`LPToken1 balance of signer : ${finalSigner}`)
+    console.log(`LPToken1 balance of masterchef : ${finalMasterchef}`)
 
     expect(finalCake).to.be.equal(0);
     //Emergency withdrawal is done without caring for REWARDS
     expect(finalSigner).to.be.greaterThan(initialSigner);
     expect(initialMasterchef).to.be.greaterThan(finalMasterchef);
-})
+  })
 });
-describe.only(' Dev Function', async () => {
-it("Dev Function : ",async()=>{
-  console.log(`Dev Address Before Dev Function Called : ${ await masterChef.devaddr()}`)
-  await masterChef.connect(signer[0]).dev(signer[2].address)
-  console.log(`Dev Address After Dev Function Called : ${ await masterChef.devaddr()}`)
-});
-it("Dev Function for error check : ",async()=>{
-  console.log(`Dev Address Before Dev Function Called : ${ await masterChef.devaddr()}`)
-  expect(masterChef.connect(signer[1]).dev(signer[2].address)).to.be.revertedWith("dev: wut?")
-  console.log(`Dev Address After Dev Function Called : ${ await masterChef.devaddr()}`) 
+describe(' Dev Function', async () => {
+  it(" *** Dev Function *** ",async()=>{
+    console.log(`Dev Address Before Dev Function Called : ${ await masterChef.devaddr()}`)
+    await masterChef.connect(signer[0]).dev(signer[2].address)
+    console.log(`Dev Address After Dev Function Called : ${ await masterChef.devaddr()}`)
+  }); 
+  it(" *** Dev Function For Check Error *** ",async()=>{
+    console.log(`Dev Address Before Dev Function Called : ${ await masterChef.devaddr()}`)
+    expect(masterChef.connect(signer[1]).dev(signer[2].address)).to.be.revertedWith("dev: wut?")
+    console.log(`Dev Address After Dev Function Called : ${ await masterChef.devaddr()}`) 
       });
     });
   });
