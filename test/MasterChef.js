@@ -1,12 +1,18 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
-
+// d/w ->lp token -> withdraw lp token ->     
 describe('PanCakeSwap Contract', async () => {
   let masterChef;
   let cakeToken;
   let syrupBar;
   let LPToken1;
   let LPToken2;
+  
+  async function _deposit(){
+    await masterChef.add(100,LPToken1.target,true);
+    await LPToken1.connect(signer[0]).approve(masterChef.target,1000);
+    await masterChef.connect(signer[0]).deposit(1,500);
+}
 beforeEach(async () => {
   signer = await ethers.getSigners();
 
@@ -67,12 +73,14 @@ it('  *** Set Function ***  ', async () => {
   console.log(`Balance of LPToken2 at Signer ${ await LPToken2.connect(signer[0]).balanceOf(signer[0].address)}`)
 });
 
-it.only( " *** Deposit Function ***  ",async ()=>{
-  // function deposit(uint256 _pid, uint256 _amount)
+describe(' Deposit Function', async () => {
+it( " *** Deposit Function ***  ",async ()=>{
   await masterChef.add(1000,LPToken1.target,true);
   iniBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
-  iniBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
+  // iniCake=await cakeToken.connect(signer[0]).balanceOf(signer[0].address)
+  // console.log(`Balance of iniCake at Signer ${ await iniCake}`)
 
+  iniBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
   console.log(`Balance of LPToken1 at Signer ${ await iniBalSigner}`)
   console.log(`Balance of LPToken1 at MasterChef ${ await iniBalMasterChef}`)
 
@@ -80,12 +88,57 @@ it.only( " *** Deposit Function ***  ",async ()=>{
   await masterChef.connect(signer[0]).deposit(1,250);
   finalBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
   finalBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
+  // fnlCake=await cakeToken.connect(signer[0]).balanceOf(signer[0].address)
+  // console.log(`Balance of fnlCake at Signer ${ await fnlCake}`)
 
   console.log(`Balance of LPToken1 at Signer ${ await finalBalSigner}`)
   console.log(`Balance of LPToken1 at MasterChef ${ await finalBalMasterChef}`)
 
   expect(iniBalSigner).to.be.greaterThan(finalBalSigner);
-  expect(iniBalMasterChef).to.be.greaterThan(finalBalMasterChef);
-  expect(finalMasterchef).to.be.equal(250);
+  expect(finalBalMasterChef).to.be.greaterThan(iniBalMasterChef);
+  expect(finalBalMasterChef).to.be.equal(250);
  });
+ it(" *** Deposit Function For Error Check *** ",async()=>{
+
+  await masterChef.add(1000,LPToken1.target,true);
+  await LPToken1.connect(signer[0]).approve(masterChef.target,900);
+  await expect(masterChef.connect(signer[0]).deposit(0,200)).to.be.revertedWith('deposit CAKE by staking');
+  //using  _pid = 0  to give and check error
+  })
+});
+describe(' Withdraw Function', async () => {
+  it( " *** Withdraw Function ***  ",async ()=>{
+    await _deposit();
+    iniBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
+    iniBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
+    iniCake=await cakeToken.connect(signer[0]).balanceOf(signer[0].address)
+    console.log(`Balance of iniCake at Signer ${ await iniCake}`)
+    console.log(`Balance of LPToken1 at Signer ${ await iniBalSigner}`)
+    console.log(`Balance of LPToken1 at MasterChef ${ await iniBalMasterChef}`)
+
+    await masterChef.connect(signer[0]).withdraw(1,200);
+
+    finalBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
+    finalBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
+    fnlCake=await cakeToken.connect(signer[0]).balanceOf(signer[0].address)
+    console.log(`Balance of fnlCake at Signer ${ await fnlCake}`)
+    console.log(`Balance of LPToken1 at Signer ${ await finalBalSigner}`)
+    console.log(`Balance of LPToken1 at MasterChef ${ await finalBalMasterChef}`)
+    });
+    it(" *** Withdraw Function For Error Check *** ",async()=>{
+      await _deposit();
+      await expect(masterChef.connect(signer[0]).withdraw(0,200)).to.be.revertedWith('withdraw CAKE by unstaking');
+      //using  _pid = 0  to give and check error
+    })
+    it(" *** Withdraw Function For Error Check *** ",async()=>{
+      await _deposit();
+      await expect(masterChef.connect(signer[0]).withdraw(1,2000)).to.be.revertedWith("withdraw: not good");// pid=1
+      //using  _pid = 0  to give and check error
+    })
+  });
+  describe(' EnterStaking Function', async () => {
+    it( " *** EnterStaking Function ***  ",async ()=>{
+
+    });
+  });
 });
