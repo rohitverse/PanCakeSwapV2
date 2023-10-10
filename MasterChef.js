@@ -81,8 +81,6 @@ describe(' Deposit Function', async () => {
 it( " *** Deposit Function ***  ",async ()=>{
   await masterChef.add(1000,LPToken1.target,true);
   iniBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
-  // iniCake=await cakeToken.connect(signer[0]).balanceOf(signer[0].address)
-  // console.log(`Balance of iniCake at Signer ${ await iniCake}`)
 
   iniBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
   console.log(`Balance of LPToken1 at Signer ${ await iniBalSigner}`)
@@ -92,9 +90,7 @@ it( " *** Deposit Function ***  ",async ()=>{
   await masterChef.connect(signer[0]).deposit(1,250);
   finalBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
   finalBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
-  // fnlCake=await cakeToken.connect(signer[0]).balanceOf(signer[0].address)
-  // console.log(`Balance of fnlCake at Signer ${ await fnlCake}`)
-
+ 
   console.log(`Balance of LPToken1 at Signer ${ await finalBalSigner}`)
   console.log(`Balance of LPToken1 at MasterChef ${ await finalBalMasterChef}`)
 
