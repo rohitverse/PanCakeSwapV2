@@ -70,29 +70,22 @@ it('  *** Set Function ***  ', async () => {
 it.only( " *** Deposit Function ***  ",async ()=>{
   // function deposit(uint256 _pid, uint256 _amount)
   await masterChef.add(1000,LPToken1.target,true);
+  iniBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
+  iniBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
 
-  console.log(`Balance of LPToken1 at Signer ${ await LPToken1.connect(signer[0]).balanceOf(signer[0].address)}`)
-  console.log(`Balance of LPToken1 at MasterChef ${ await LPToken1.connect(signer[0]).balanceOf(masterChef.target)}`)
-  console.log(`Balance of LPToken2 at Signer ${ await LPToken2.connect(signer[0]).balanceOf(signer[0].address)}`)
-  console.log(`Balance of LPToken2 at MasterChef ${ await LPToken2.connect(signer[0]).balanceOf(masterChef.target)}`)
+  console.log(`Balance of LPToken1 at Signer ${ await iniBalSigner}`)
+  console.log(`Balance of LPToken1 at MasterChef ${ await iniBalMasterChef}`)
+
   await LPToken1.connect(signer[0]).approve(masterChef.target,1000);
-  await masterChef.connect(signer[0]).deposit(1,150);
-  
-  initialSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
-  initialMasterchef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
-  console.log(`Balance of LPToken1 at Signer ${ await LPToken1.connect(signer[0]).balanceOf(signer[0].address)}`)
-  console.log(`Balance of LPToken1 at MasterChef ${ await LPToken1.connect(signer[0]).balanceOf(masterChef.target)}`)
-  console.log(`Balance of LPToken2 at Signer ${ await LPToken2.connect(signer[0]).balanceOf(signer[0].address)}`)
-  console.log(`Balance of LPToken2 at MasterChef ${ await LPToken2.connect(signer[0]).balanceOf(masterChef.target)}`)
-  await masterChef.connect(signer[0]).deposit(1,150);
-    
-  console.log(`Balance of LPToken1 at Signer ${ await LPToken1.connect(signer[0]).balanceOf(signer[0].address)}`)
-  console.log(`Balance of LPToken1 at MasterChef ${ await LPToken1.connect(signer[0]).balanceOf(masterChef.target)}`)
-  console.log(`Balance of LPToken2 at Signer ${ await LPToken2.connect(signer[0]).balanceOf(signer[0].address)}`)
-  console.log(`Balance of LPToken2 at MasterChef ${ await LPToken2.connect(signer[0]).balanceOf(masterChef.target)}`)
+  await masterChef.connect(signer[0]).deposit(1,250);
+  finalBalSigner= await LPToken1.connect(signer[0]).balanceOf(signer[0].address)
+  finalBalMasterChef= await LPToken1.connect(signer[0]).balanceOf(masterChef.target)
 
-  expect(initialSigner).to.be.greaterThan(finalSigner);
-  expect(finalMasterchef).to.be.greaterThan(initialMasterchef);
-  expect(finalMasterchef).to.be.equal(400);
+  console.log(`Balance of LPToken1 at Signer ${ await finalBalSigner}`)
+  console.log(`Balance of LPToken1 at MasterChef ${ await finalBalMasterChef}`)
+
+  expect(iniBalSigner).to.be.greaterThan(finalBalSigner);
+  expect(iniBalMasterChef).to.be.greaterThan(finalBalMasterChef);
+  expect(finalMasterchef).to.be.equal(250);
  });
 });
